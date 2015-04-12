@@ -90,7 +90,7 @@ module.exports = function(grunt) {
                 files: {
                     'dist/joint.js': [].concat(
                         js.libs.jquery, js.libs.backbone,
-                        js.helpers.vectorizer, js.helpers.geometry,
+                        js.helpers.geometry, js.helpers.vectorizer,
                         js.core
                     ),
                     'dist/joint.clean.js': [].concat(
@@ -110,7 +110,7 @@ module.exports = function(grunt) {
                 files: {
                     'dist/joint.all.js': [].concat(
                         js.libs.jquery, js.libs.backbone,
-                        js.helpers.vectorizer, js.helpers.geometry,
+                        js.helpers.geometry, js.helpers.vectorizer,
                         js.core, allJSPlugins()
                     ),
                     'dist/joint.all.clean.js': [].concat(
@@ -130,7 +130,7 @@ module.exports = function(grunt) {
                 files: {
                     'dist/joint.nojquery.js': [].concat(
                         js.libs.backbone,
-                        js.helpers.vectorizer, js.helpers.geometry,
+                        js.helpers.geometry, js.helpers.vectorizer,
                         js.core
                     ),
                     'dist/joint.nojquery.css': [].concat(
@@ -147,7 +147,7 @@ module.exports = function(grunt) {
                 files: {
                     'dist/joint.nobackbone.js': [].concat(
                         js.libs.jquery,
-                        js.helpers.vectorizer, js.helpers.geometry,
+                        js.helpers.geometry, js.helpers.vectorizer,
                         js.core
                     ),
                     'dist/joint.nojquery.css': [].concat(
@@ -163,7 +163,7 @@ module.exports = function(grunt) {
 		},
                 files: {
                     'dist/joint.nojquerynobackbone.js': [].concat(
-                        js.helpers.vectorizer, js.helpers.geometry,
+                        js.helpers.geometry, js.helpers.vectorizer,
                         js.core
                     ),
                     'dist/joint.nojquerynobackbone.css': [].concat(

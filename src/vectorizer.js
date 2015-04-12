@@ -9,14 +9,15 @@
 
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
-        define([], factory);
+        define(["Geometry"], factory);
         
     } else {
         // Browser globals.
-        root.Vectorizer = root.V = factory();
+        var Geometry = root.G || root.Geometry || root.g;
+        root.Vectorizer = root.V = factory(Geometry);
     }
 
-}(this, function() {
+}(this, function(g) {
 
     // Well, if SVG is not supported, this library is useless.
     var SVGsupported = !!(window.SVGAngle || document.implementation.hasFeature('http://www.w3.org/TR/SVG11/feature#BasicStructure', '1.1'));

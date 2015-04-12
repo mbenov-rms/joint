@@ -1,30 +1,49 @@
-joint.connectors.rounded = function(sourcePoint, targetPoint, vertices, opts) {
+(function (root, factory){
 
-    var offset = opts.radius || 10;
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define(["joint", "lodash", "Backbone", "Vectorizer", "Geometry", "jQuery"], factory);
+        
+    } else {
+        // Browser globals.
+        var joint = root.joint;
+        var $ = root.$ || root.jQuery;
+        var Backbone = root.Backbone;
+        var _ = root._;
+        var Vectorizer = root.V || root.Vectorizer;
+        var Geometry = root.G || root.Geometry || root.g;
+        
+        factory(joint, _, Backbone, Vectorizer, Geometry, $);
+    }
+})(this, function(joint, _, Backbone, V, g, $){ 
+    joint.connectors.rounded = function(sourcePoint, targetPoint, vertices, opts) {
 
-    var c1, c2, d1, d2, prev, next;
+        var offset = opts.radius || 10;
 
-    // Construct the `d` attribute of the `<path>` element.
-    var d = ['M', sourcePoint.x, sourcePoint.y];
+        var c1, c2, d1, d2, prev, next;
 
-    _.each(vertices, function(vertex, index) {
+        // Construct the `d` attribute of the `<path>` element.
+        var d = ['M', sourcePoint.x, sourcePoint.y];
 
-        // the closest vertices
-        prev = vertices[index-1] || sourcePoint;
-        next = vertices[index+1] || targetPoint;
+        _.each(vertices, function(vertex, index) {
 
-        // a half distance to the closest vertex
-        d1 = d2 || g.point(vertex).distance(prev) / 2;
-        d2 = g.point(vertex).distance(next) / 2;
+            // the closest vertices
+            prev = vertices[index-1] || sourcePoint;
+            next = vertices[index+1] || targetPoint;
 
-        // control points
-        c1 = g.point(vertex).move(prev, -Math.min(offset, d1)).round();
-        c2 = g.point(vertex).move(next, -Math.min(offset, d2)).round();
+            // a half distance to the closest vertex
+            d1 = d2 || g.point(vertex).distance(prev) / 2;
+            d2 = g.point(vertex).distance(next) / 2;
 
-        d.push(c1.x, c1.y, 'S', vertex.x, vertex.y, c2.x, c2.y, 'L');
-    });
+            // control points
+            c1 = g.point(vertex).move(prev, -Math.min(offset, d1)).round();
+            c2 = g.point(vertex).move(next, -Math.min(offset, d2)).round();
 
-    d.push(targetPoint.x, targetPoint.y);
+            d.push(c1.x, c1.y, 'S', vertex.x, vertex.y, c2.x, c2.y, 'L');
+        });
 
-    return d.join(' ');
-};
+        d.push(targetPoint.x, targetPoint.y);
+
+        return d.join(' ');
+    };
+});

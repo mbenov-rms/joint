@@ -1,4 +1,4 @@
-joint.routers.orthogonal = function() {
+window.joint.routers.orthogonal = function() {
 
     var sourceBBox, targetBBox;
 

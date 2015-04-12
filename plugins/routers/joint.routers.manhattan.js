@@ -1,4 +1,4 @@
-joint.routers.manhattan = (function() {
+window.joint.routers.manhattan = (function() {
 
     'use strict';
 
