@@ -11,6 +11,13 @@
         // AMD. Register as an anonymous module.
         define(["Geometry"], factory);
         
+    } else if (typeof exports === 'object') {
+        // Node. Does not work with strict CommonJS, but
+        // only CommonJS-like environments that support module.exports,
+        // like Node.
+        var Geometry = require('G') || require('Geometry') || require('g');
+        module.exports = factory(Geometry);
+        
     } else {
         // Browser globals.
         var Geometry = root.G || root.Geometry || root.g;

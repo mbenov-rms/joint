@@ -1,68 +1,85 @@
-if (typeof exports === 'object') {
+i
+//      JointJS library.
+//      (c) 2011-2013 client IO
 
-    var joint = {
-        util: require('../src/core').util,
-        shapes: {},
-        dia: {
-            Element: require('../src/joint.dia.element').Element,
-            Link: require('../src/joint.dia.link').Link
-        }
-    };
-}
 
-joint.shapes.org = {};
+(function (root, factory){
 
-joint.shapes.org.Member = joint.dia.Element.extend({
-
-    markup: '<g class="rotatable"><g class="scalable"><rect class="card"/><image/></g><text class="rank"/><text class="name"/></g>',
-
-    defaults: joint.util.deepSupplement({
-
-        type: 'org.Member',
-        size: { width: 180, height: 70 },
-        attrs: {
-
-            rect: { width: 170, height: 60 },
-
-            '.card': {
-                fill: '#FFFFFF', stroke: '#000000', 'stroke-width': 2,
-                'pointer-events': 'visiblePainted', rx: 10, ry: 10
-            },
-
-            image: {
-		width: 48, height: 48,
-                ref: '.card', 'ref-x': 10, 'ref-y': 5
-            },
-            
-            '.rank': {
-                'text-decoration': 'underline',
-                ref: '.card', 'ref-x': 0.9, 'ref-y': 0.2,
-                'font-family': 'Courier New', 'font-size': 14,
-		'text-anchor': 'end'
-            },
-
-            '.name': {
-                'font-weight': '800',
-                ref: '.card', 'ref-x': 0.9, 'ref-y': 0.6,
-                'font-family': 'Courier New', 'font-size': 14,
-		'text-anchor': 'end'
-            }
-        }
-    }, joint.dia.Element.prototype.defaults)
-});
-
-joint.shapes.org.Arrow = joint.dia.Link.extend({
-
-    defaults: {
-        type: 'org.Arrow',
-        source: { selector: '.card' }, target: { selector: '.card' },
-        attrs: { '.connection': { stroke: '#585858', 'stroke-width': 3 }},
-        z: -1
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define(["JointJS", "lodash", "Backbone", "Vectorizer", "Geometry", "jQuery"], factory);
+    } else if (typeof exports === 'object') {
+        // CommonJS module
+        var joint = require('JointJS');
+        var $ = require('$') || require('jQuery') ;
+        var Backbone = require('Backbone');
+        var _ = require('lodash');
+        var Vectorizer = require('V') || require('Vectorizer');
+        var Geometry = require('G') || require('Geometry') || require('g');
+        
+        factory(joint, _, Backbone, Vectorizer, Geometry, $);
+    } else {
+        // Browser globals.
+        var joint = root.joint;
+        var $ = root.$ || root.jQuery;
+        var Backbone = root.Backbone;
+        var _ = root._;
+        var Vectorizer = root.V || root.Vectorizer;
+        var Geometry = root.G || root.Geometry || root.g;
+        
+        factory(joint, _, Backbone, Vectorizer, Geometry, $);
     }
+})(this, function(joint, _, Backbone, V, g, $){
+
+    joint.shapes.org = {};
+
+    joint.shapes.org.Member = joint.dia.Element.extend({
+
+        markup: '<g class="rotatable"><g class="scalable"><rect class="card"/><image/></g><text class="rank"/><text class="name"/></g>',
+
+        defaults: joint.util.deepSupplement({
+
+            type: 'org.Member',
+            size: { width: 180, height: 70 },
+            attrs: {
+
+                rect: { width: 170, height: 60 },
+
+                '.card': {
+                    fill: '#FFFFFF', stroke: '#000000', 'stroke-width': 2,
+                    'pointer-events': 'visiblePainted', rx: 10, ry: 10
+                },
+
+                image: {
+            width: 48, height: 48,
+                    ref: '.card', 'ref-x': 10, 'ref-y': 5
+                },
+                
+                '.rank': {
+                    'text-decoration': 'underline',
+                    ref: '.card', 'ref-x': 0.9, 'ref-y': 0.2,
+                    'font-family': 'Courier New', 'font-size': 14,
+            'text-anchor': 'end'
+                },
+
+                '.name': {
+                    'font-weight': '800',
+                    ref: '.card', 'ref-x': 0.9, 'ref-y': 0.6,
+                    'font-family': 'Courier New', 'font-size': 14,
+            'text-anchor': 'end'
+                }
+            }
+        }, joint.dia.Element.prototype.defaults)
+    });
+
+    joint.shapes.org.Arrow = joint.dia.Link.extend({
+
+        defaults: {
+            type: 'org.Arrow',
+            source: { selector: '.card' }, target: { selector: '.card' },
+            attrs: { '.connection': { stroke: '#585858', 'stroke-width': 3 }},
+            z: -1
+        }
+    });
+
 });
-
-
-if (typeof exports === 'object') {
-
-    module.exports = joint.shapes.org;
-}

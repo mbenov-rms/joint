@@ -1,21 +1,26 @@
+
+//      JointJS library.
+//      (c) 2011-2013 client IO
+
+
 (function (root, factory){
 
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
-        define(["joint", "lodash", "Backbone", "Vectorizer", "Geometry", "jQuery"], factory);
+        define(["JointJS"], factory);
+    } else if (typeof exports === 'object') {
+        // CommonJS module
+        var joint = require('JointJS');
         
+        factory(joint);
     } else {
         // Browser globals.
         var joint = root.joint;
-        var $ = root.$ || root.jQuery;
-        var Backbone = root.Backbone;
-        var _ = root._;
-        var Vectorizer = root.V || root.Vectorizer;
-        var Geometry = root.G || root.Geometry || root.g;
         
-        factory(joint, _, Backbone, Vectorizer, Geometry, $);
+        factory(joint);
     }
-})(this, function(joint, _, Backbone, V, g, $){ 
+})(this, function(joint){
+
     joint.connectors.smooth = function(sourcePoint, targetPoint, vertices) {
 
         var d;

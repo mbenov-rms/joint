@@ -1,21 +1,23 @@
 //      JointJS library.
 //      (c) 2011-2013 client IO
 
-if (typeof exports === 'object') {
-
-    var _ = require('lodash');
-}
-
-
-// Factory wrapper
-
+// joint Core
+// --------------------------
 
 (function (root, factory){
-
+    debugger
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
         define(["lodash", "Backbone", "Vectorizer", "Geometry", "jQuery"], factory);
+    } else if (typeof exports === 'object') {
+        // CommonJS module
+        var $ = require('$') || require('jQuery') ;
+        var Backbone = require('Backbone');
+        var _ = require('lodash');
+        var Vectorizer = require('V') || require('Vectorizer');
+        var Geometry = require('G') || require('Geometry') || require('g');
         
+        exports.joint = factory(_, Backbone, Vectorizer, Geometry, $);
     } else {
         // Browser globals.
         var $ = root.$ || root.jQuery;

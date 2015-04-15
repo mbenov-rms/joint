@@ -3,25 +3,21 @@
 //      (c) 2011-2013 client IO
 
 
-if (typeof exports === 'object') {
-
-    var joint = {
-        util: require('../src/core').util,
-        shapes: {},
-        dia: {
-            Element: require('../src/joint.dia.element').Element,
-            ElementView: require('../src/joint.dia.element').ElementView
-        }
-    };
-    var _ = require('lodash');
-}
-
 (function (root, factory){
 
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
-        define(["joint", "lodash", "Backbone", "Vectorizer", "Geometry", "jQuery"], factory);
+        define(["JointJS", "lodash", "Backbone", "Vectorizer", "Geometry", "jQuery"], factory);
+    } else if (typeof exports === 'object') {
+        // CommonJS module
+        var joint = require('JointJS');
+        var $ = require('$') || require('jQuery') ;
+        var Backbone = require('Backbone');
+        var _ = require('lodash');
+        var Vectorizer = require('V') || require('Vectorizer');
+        var Geometry = require('G') || require('Geometry') || require('g');
         
+        module.exports = factory(joint, _, Backbone, Vectorizer, Geometry, $);
     } else {
         // Browser globals.
         var joint = root.joint;
@@ -416,8 +412,3 @@ if (typeof exports === 'object') {
     });
 
 });
-
-if (typeof exports === 'object') {
-
-    module.exports = joint.shapes.basic;
-}

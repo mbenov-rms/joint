@@ -2,19 +2,6 @@
 //      (c) 2011-2013 client IO
 
 
-if (typeof exports === 'object') {
-
-    var joint = {
-        util: require('./core').util,
-        dia: {
-            Link: require('./joint.dia.link').Link
-        }
-    };
-    var Backbone = require('backbone');
-    var _ = require('lodash');
-}
-
-
 // joint.dia.Cell base model.
 // --------------------------
 
@@ -22,8 +9,17 @@ if (typeof exports === 'object') {
 
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
-        define(["joint", "lodash", "Backbone", "Vectorizer", "Geometry", "jQuery"], factory);
+        define(["JointJS", "lodash", "Backbone", "Vectorizer", "Geometry", "jQuery"], factory);
+    } else if (typeof exports === 'object') {
+        // CommonJS module
+        var joint = require('JointJS');
+        var $ = require('$') || require('jQuery') ;
+        var Backbone = require('Backbone');
+        var _ = require('lodash');
+        var Vectorizer = require('V') || require('Vectorizer');
+        var Geometry = require('G') || require('Geometry') || require('g');
         
+        factory(joint, _, Backbone, Vectorizer, Geometry, $);
     } else {
         // Browser globals.
         var joint = root.joint;

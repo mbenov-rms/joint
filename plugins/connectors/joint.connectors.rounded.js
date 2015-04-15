@@ -1,21 +1,30 @@
+
+//      JointJS library.
+//      (c) 2011-2013 client IO
+
+
 (function (root, factory){
 
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
-        define(["joint", "lodash", "Backbone", "Vectorizer", "Geometry", "jQuery"], factory);
+        define(["JointJS", "lodash", "Geometry"], factory);
+    } else if (typeof exports === 'object') {
+        // CommonJS module
+        var joint = require('JointJS');
+        var _ = require('lodash');
+        var Geometry = require('G') || require('Geometry') || require('g');
         
+        factory(joint, _, Geometry);
     } else {
         // Browser globals.
         var joint = root.joint;
-        var $ = root.$ || root.jQuery;
-        var Backbone = root.Backbone;
         var _ = root._;
-        var Vectorizer = root.V || root.Vectorizer;
         var Geometry = root.G || root.Geometry || root.g;
         
-        factory(joint, _, Backbone, Vectorizer, Geometry, $);
+        factory(joint, _, Geometry);
     }
-})(this, function(joint, _, Backbone, V, g, $){ 
+})(this, function(joint, _, g){
+
     joint.connectors.rounded = function(sourcePoint, targetPoint, vertices, opts) {
 
         var offset = opts.radius || 10;
