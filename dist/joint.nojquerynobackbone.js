@@ -1521,7 +1521,6 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 // --------------------------
 
 (function (root, factory){
-    debugger
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
         define(["lodash", "Backbone", "Vectorizer", "Geometry", "jQuery"], factory);

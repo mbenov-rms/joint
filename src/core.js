@@ -5,7 +5,6 @@
 // --------------------------
 
 (function (root, factory){
-    debugger
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
         define(["lodash", "Backbone", "Vectorizer", "Geometry", "jQuery"], factory);
