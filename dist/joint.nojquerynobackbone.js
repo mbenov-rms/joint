@@ -1,4 +1,4 @@
-/*! JointJS v0.9.3 - JavaScript diagramming library  2015-04-15 
+/*! JointJS v0.9.3 - JavaScript diagramming library  2015-04-20 
 
 
 This Source Code Form is subject to the terms of the Mozilla Public
@@ -14,13 +14,13 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
         define([], factory);
-        
+
     } else if (typeof exports === 'object') {
         // Node. Does not work with strict CommonJS, but
         // only CommonJS-like environments that support module.exports,
         // like Node.
         module.exports = factory();
-        
+
     } else {
         // Browser globals.
         root.g = factory();
@@ -44,13 +44,13 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
     var floor = math.floor;
     var PI = math.PI;
     var random = math.random;
-    var toDeg = function(rad) { return (180*rad / PI) % 360; };
+    var toDeg = function(rad) { return (180 * rad / PI) % 360; };
     var toRad = function(deg, over360) {
         over360 = over360 || false;
         deg = over360 ? deg : (deg % 360);
         return deg * PI / 180;
     };
-    var snapToGrid = function(val, gridSize) { return gridSize * Math.round(val/gridSize); };
+    var snapToGrid = function(val, gridSize) { return gridSize * Math.round(val / gridSize); };
     var normalizeAngle = function(angle) { return (angle % 360) + (angle < 0 ? 360 : 0); };
 
     // Point
@@ -83,18 +83,18 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
     point.prototype = {
         toString: function() {
-            return this.x + "@" + this.y;
+            return this.x + '@' + this.y;
         },
         // If point lies outside rectangle `r`, return the nearest point on the boundary of rect `r`,
         // otherwise return point itself.
         // (see Squeak Smalltalk, Point>>adhereTo:)
         adhereToRect: function(r) {
-	    if (r.containsPoint(this)){
-	        return this;
-	    }
-	    this.x = mmin(mmax(this.x, r.x), r.x + r.width);
-	    this.y = mmin(mmax(this.y, r.y), r.y + r.height);
-	    return this;
+            if (r.containsPoint(this)) {
+                return this;
+            }
+            this.x = mmin(mmax(this.x, r.x), r.x + r.width);
+            this.y = mmin(mmax(this.y, r.y), r.y + r.height);
+            return this;
         },
         // Compute the angle between me and `p` and the x axis.
         // (cartesian-to-polar coordinates conversion)
@@ -102,22 +102,22 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
         theta: function(p) {
             p = point(p);
             // Invert the y-axis.
-	    var y = -(p.y - this.y);
-	    var x = p.x - this.x;
+            var y = -(p.y - this.y);
+            var x = p.x - this.x;
             // Makes sure that the comparison with zero takes rounding errors into account.
             var PRECISION = 10;
             // Note that `atan2` is not defined for `x`, `y` both equal zero.
-	    var rad = (y.toFixed(PRECISION) == 0 && x.toFixed(PRECISION) == 0) ? 0 : atan2(y, x); 
+            var rad = (y.toFixed(PRECISION) == 0 && x.toFixed(PRECISION) == 0) ? 0 : atan2(y, x);
 
             // Correction for III. and IV. quadrant.
-	    if (rad < 0) { 
-	        rad = 2*PI + rad;
-	    }
-	    return 180*rad / PI;
+            if (rad < 0) {
+                rad = 2 * PI + rad;
+            }
+            return 180 * rad / PI;
         },
         // Returns distance between me and point `p`.
         distance: function(p) {
-	    return line(this, p).length();
+            return line(this, p).length();
         },
         // Returns a manhattan (taxi-cab) distance between me and point `p`.
         manhattanDistance: function(p) {
@@ -125,12 +125,12 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
         },
         // Offset me by the specified amount.
         offset: function(dx, dy) {
-	    this.x += dx || 0;
-	    this.y += dy || 0;
-	    return this;
+            this.x += dx || 0;
+            this.y += dy || 0;
+            return this;
         },
         magnitude: function() {
-            return sqrt((this.x*this.x) + (this.y*this.y)) || 0.01;
+            return sqrt((this.x * this.x) + (this.y * this.y)) || 0.01;
         },
         update: function(x, y) {
             this.x = x || 0;
@@ -144,10 +144,10 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
         },
         // Scale the line segment between (0,0) and me to have a length of len.
         normalize: function(len) {
-	    var s = (len || 1) / this.magnitude();
-	    this.x = s * this.x;
-	    this.y = s * this.y;
-	    return this;
+            var s = (len || 1) / this.magnitude();
+            this.x = s * this.x;
+            this.y = s * this.y;
+            return this;
         },
         difference: function(p) {
             return point(this.x - p.x, this.y - p.y);
@@ -155,15 +155,15 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
         // Return the bearing between me and point `p`.
         bearing: function(p) {
             return line(this, p).bearing();
-        },        
+        },
         // Converts rectangular to polar coordinates.
         // An origin can be specified, otherwise it's 0@0.
         toPolar: function(o) {
-            o = (o && point(o)) || point(0,0);
+            o = (o && point(o)) || point(0, 0);
             var x = this.x;
             var y = this.y;
-            this.x = sqrt((x-o.x)*(x-o.x) + (y-o.y)*(y-o.y));   // r
-            this.y = toRad(o.theta(point(x,y)));
+            this.x = sqrt((x - o.x) * (x - o.x) + (y - o.y) * (y - o.y)); // r
+            this.y = toRad(o.theta(point(x, y)));
             return this;
         },
         // Rotate point by angle around origin o.
@@ -192,8 +192,8 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
             return this.x === p.x && this.y === p.y;
         },
         snapToGrid: function(gx, gy) {
-            this.x = snapToGrid(this.x, gx)
-            this.y = snapToGrid(this.y, gy || gx)
+            this.x = snapToGrid(this.x, gx);
+            this.y = snapToGrid(this.y, gy || gx);
             return this;
         },
         // Returns a point that is the reflection of me with
@@ -207,15 +207,20 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
     // @param {number} angle Angle in radians.
     // @param {point} [optional] o Origin.
     point.fromPolar = function(r, angle, o) {
-        o = (o && point(o)) || point(0,0);
+        o = (o && point(o)) || point(0, 0);
         var x = abs(r * cos(angle));
         var y = abs(r * sin(angle));
         var deg = normalizeAngle(toDeg(angle));
 
-        if (deg < 90) y = -y;
-        else if (deg < 180) { x = -x; y = -y; }
-        else if (deg < 270) x = -x;
-        
+        if (deg < 90) {
+            y = -y;
+        } else if (deg < 180) {
+            x = -x;
+            y = -y;
+        } else if (deg < 270) {
+            x = -x;
+        }
+
         return point(o.x + x, o.y + y);
     };
 
@@ -232,10 +237,10 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
         this.start = point(p1);
         this.end = point(p2);
     }
-    
+
     line.prototype = {
         toString: function() {
-	    return this.start.toString() + ' ' + this.end.toString();
+            return this.start.toString() + ' ' + this.end.toString();
         },
         // @return {double} length of the line
         length: function() {
@@ -244,50 +249,50 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
         // @return {integer} length without sqrt
         // @note for applications where the exact length is not necessary (e.g. compare only)
         squaredLength: function() {
-	    var x0 = this.start.x;
+            var x0 = this.start.x;
             var y0 = this.start.y;
-	    var x1 = this.end.x;
+            var x1 = this.end.x;
             var y1 = this.end.y;
-	    return (x0 -= x1)*x0 + (y0 -= y1)*y0;
+            return (x0 -= x1) * x0 + (y0 -= y1) * y0;
         },
         // @return {point} my midpoint
         midpoint: function() {
-	    return point((this.start.x + this.end.x) / 2,
-		         (this.start.y + this.end.y) / 2);
+            return point((this.start.x + this.end.x) / 2,
+                         (this.start.y + this.end.y) / 2);
         },
         // @return {point} Point where I'm intersecting l.
         // @see Squeak Smalltalk, LineSegment>>intersectionWith:
         intersection: function(l) {
-	    var pt1Dir = point(this.end.x - this.start.x, this.end.y - this.start.y);
-	    var pt2Dir = point(l.end.x - l.start.x, l.end.y - l.start.y);
-	    var det = (pt1Dir.x * pt2Dir.y) - (pt1Dir.y * pt2Dir.x);
-	    var deltaPt = point(l.start.x - this.start.x, l.start.y - this.start.y);
-	    var alpha = (deltaPt.x * pt2Dir.y) - (deltaPt.y * pt2Dir.x);
-	    var beta = (deltaPt.x * pt1Dir.y) - (deltaPt.y * pt1Dir.x);
+            var pt1Dir = point(this.end.x - this.start.x, this.end.y - this.start.y);
+            var pt2Dir = point(l.end.x - l.start.x, l.end.y - l.start.y);
+            var det = (pt1Dir.x * pt2Dir.y) - (pt1Dir.y * pt2Dir.x);
+            var deltaPt = point(l.start.x - this.start.x, l.start.y - this.start.y);
+            var alpha = (deltaPt.x * pt2Dir.y) - (deltaPt.y * pt2Dir.x);
+            var beta = (deltaPt.x * pt1Dir.y) - (deltaPt.y * pt1Dir.x);
 
-	    if (det === 0 ||
-	        alpha * det < 0 ||
-	        beta * det < 0) {
+            if (det === 0 ||
+                alpha * det < 0 ||
+                beta * det < 0) {
                 // No intersection found.
-	        return null;	
-	    }
-	    if (det > 0){
-	        if (alpha > det || beta > det){
-		    return null;
-	        }
-	    } else {
-	        if (alpha < det || beta < det){
-		    return null;
-	        }
-	    }
-	    return point(this.start.x + (alpha * pt1Dir.x / det),
-		         this.start.y + (alpha * pt1Dir.y / det));
+                return null;
+            }
+            if (det > 0) {
+                if (alpha > det || beta > det) {
+                    return null;
+                }
+            } else {
+                if (alpha < det || beta < det) {
+                    return null;
+                }
+            }
+            return point(this.start.x + (alpha * pt1Dir.x / det),
+                         this.start.y + (alpha * pt1Dir.y / det));
         },
-        
+
         // @return the bearing (cardinal direction) of the line. For example N, W, or SE.
         // @returns {String} One of the following bearings : NE, E, SE, S, SW, W, NW, N.
         bearing: function() {
-            
+
             var lat1 = toRad(this.start.y);
             var lat2 = toRad(this.end.y);
             var lon1 = this.start.x;
@@ -312,6 +317,12 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
             var x = (1 - t) * this.start.x + t * this.end.x;
             var y = (1 - t) * this.start.y + t * this.end.y;
             return point(x, y);
+        },
+
+        // @return {number} the offset of the point `p` from the line. + if the point `p` is on the right side of the line, - if on the left and 0 if on the line.
+        pointOffset: function(p) {
+            // Find the sign of the determinant of vectors (start,end), where p is the query point.
+            return ((this.end.x - this.start.x) * (p.y - this.start.y) - (this.end.y - this.start.y) * (p.x - this.start.x)) / 2;
         }
     };
 
@@ -324,17 +335,17 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
             y = x.y;
             w = x.width;
             h = x.height;
-            x = x.x;        
+            x = x.x;
         }
         this.x = x;
         this.y = y;
         this.width = w;
         this.height = h;
     }
-    
+
     rect.prototype = {
         toString: function() {
-	    return this.origin().toString() + ' ' + this.corner().toString();
+            return this.origin().toString() + ' ' + this.corner().toString();
         },
         origin: function() {
             return point(this.x, this.y);
@@ -349,54 +360,54 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
             return point(this.x, this.y + this.height);
         },
         center: function() {
-            return point(this.x + this.width/2, this.y + this.height/2);
+            return point(this.x + this.width / 2, this.y + this.height / 2);
         },
         // @return {boolean} true if rectangles intersect
         intersect: function(r) {
-	    var myOrigin = this.origin();
-	    var myCorner = this.corner();
-	    var rOrigin = r.origin();
-	    var rCorner = r.corner();
-            
-	    if (rCorner.x <= myOrigin.x ||
-	        rCorner.y <= myOrigin.y ||
-	        rOrigin.x >= myCorner.x ||
-	        rOrigin.y >= myCorner.y) return false;
-	    return true;
+            var myOrigin = this.origin();
+            var myCorner = this.corner();
+            var rOrigin = r.origin();
+            var rCorner = r.corner();
+
+            if (rCorner.x <= myOrigin.x ||
+                rCorner.y <= myOrigin.y ||
+                rOrigin.x >= myCorner.x ||
+                rOrigin.y >= myCorner.y) return false;
+            return true;
         },
         // @return {string} (left|right|top|bottom) side which is nearest to point
         // @see Squeak Smalltalk, Rectangle>>sideNearestTo:
         sideNearestToPoint: function(p) {
             p = point(p);
-	    var distToLeft = p.x - this.x;
-	    var distToRight = (this.x + this.width) - p.x;
-	    var distToTop = p.y - this.y;
-	    var distToBottom = (this.y + this.height) - p.y;
-	    var closest = distToLeft;
-	    var side = 'left';
-            
-	    if (distToRight < closest) {
-	        closest = distToRight;
-	        side = 'right';
-	    }
-	    if (distToTop < closest) {
-	        closest = distToTop;
-	        side = 'top';
-	    }
-	    if (distToBottom < closest) {
-	        closest = distToBottom;
-	        side = 'bottom';
-	    }
-	    return side;
+            var distToLeft = p.x - this.x;
+            var distToRight = (this.x + this.width) - p.x;
+            var distToTop = p.y - this.y;
+            var distToBottom = (this.y + this.height) - p.y;
+            var closest = distToLeft;
+            var side = 'left';
+
+            if (distToRight < closest) {
+                closest = distToRight;
+                side = 'right';
+            }
+            if (distToTop < closest) {
+                closest = distToTop;
+                side = 'top';
+            }
+            if (distToBottom < closest) {
+                closest = distToBottom;
+                side = 'bottom';
+            }
+            return side;
         },
         // @return {bool} true if point p is insight me
         containsPoint: function(p) {
             p = point(p);
-	    if (p.x >= this.x && p.x <= this.x + this.width &&
-	        p.y >= this.y && p.y <= this.y + this.height) {
-	        return true;
-	    }
-	    return false;
+            if (p.x >= this.x && p.x <= this.x + this.width &&
+                p.y >= this.y && p.y <= this.y + this.height) {
+                return true;
+            }
+            return false;
         },
         // Algorithm ported from java.awt.Rectangle from OpenJDK.
         // @return {bool} true if rectangle `r` is inside me.
@@ -440,58 +451,58 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
                 if (h >= y && H > h) return false;
             }
             return true;
-        },        
+        },
         // @return {point} a point on my boundary nearest to p
         // @see Squeak Smalltalk, Rectangle>>pointNearestTo:
         pointNearestToPoint: function(p) {
             p = point(p);
-	    if (this.containsPoint(p)) {
-	        var side = this.sideNearestToPoint(p);
-	        switch (side){
-	          case "right": return point(this.x + this.width, p.y);
-	          case "left": return point(this.x, p.y);
-	          case "bottom": return point(p.x, this.y + this.height);
-	          case "top": return point(p.x, this.y);
-	        }
-	    }
-	    return p.adhereToRect(this);
+            if (this.containsPoint(p)) {
+                var side = this.sideNearestToPoint(p);
+                switch (side){
+                    case 'right': return point(this.x + this.width, p.y);
+                    case 'left': return point(this.x, p.y);
+                    case 'bottom': return point(p.x, this.y + this.height);
+                    case 'top': return point(p.x, this.y);
+                }
+            }
+            return p.adhereToRect(this);
         },
         // Find point on my boundary where line starting
         // from my center ending in point p intersects me.
         // @param {number} angle If angle is specified, intersection with rotated rectangle is computed.
         intersectionWithLineFromCenterToPoint: function(p, angle) {
             p = point(p);
-	    var center = point(this.x + this.width/2, this.y + this.height/2);
+            var center = point(this.x + this.width / 2, this.y + this.height / 2);
             var result;
             if (angle) p.rotate(center, angle);
-            
-	    // (clockwise, starting from the top side)
-	    var sides = [
-	        line(this.origin(), this.topRight()),
-	        line(this.topRight(), this.corner()),
-	        line(this.corner(), this.bottomLeft()),
-	        line(this.bottomLeft(), this.origin())
-	    ];
-	    var connector = line(center, p);
-            
-	    for (var i = sides.length - 1; i >= 0; --i){
-	        var intersection = sides[i].intersection(connector);
-	        if (intersection !== null){
-		    result = intersection;
+
+            // (clockwise, starting from the top side)
+            var sides = [
+                line(this.origin(), this.topRight()),
+                line(this.topRight(), this.corner()),
+                line(this.corner(), this.bottomLeft()),
+                line(this.bottomLeft(), this.origin())
+            ];
+            var connector = line(center, p);
+
+            for (var i = sides.length - 1; i >= 0; --i) {
+                var intersection = sides[i].intersection(connector);
+                if (intersection !== null) {
+                    result = intersection;
                     break;
-	        }
-	    }
+                }
+            }
             if (result && angle) result.rotate(center, -angle);
             return result;
         },
         // Move and expand me.
         // @param r {rectangle} representing deltas
         moveAndExpand: function(r) {
-	    this.x += r.x;
-	    this.y += r.y;
-	    this.width += r.width;
-	    this.height += r.height;
-	    return this;
+            this.x += r.x || 0;
+            this.y += r.y || 0;
+            this.width += r.width || 0;
+            this.height += r.height || 0;
+            return this;
         },
         round: function(decimals) {
             this.x = decimals ? this.x.toFixed(decimals) : round(this.x);
@@ -552,31 +563,31 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
             return point(this.x, this.y).toString() + ' ' + this.a + ' ' + this.b;
         },
         bbox: function() {
-	        return rect(this.x - this.a, this.y - this.b, 2*this.a, 2*this.b);
+            return rect(this.x - this.a, this.y - this.b, 2 * this.a, 2 * this.b);
         },
         // Find point on me where line from my center to
         // point p intersects my boundary.
         // @param {number} angle If angle is specified, intersection with rotated ellipse is computed.
         intersectionWithLineFromCenterToPoint: function(p, angle) {
-	    p = point(p);
+            p = point(p);
             if (angle) p.rotate(point(this.x, this.y), angle);
             var dx = p.x - this.x;
-	    var dy = p.y - this.y;
+            var dy = p.y - this.y;
             var result;
-	    if (dx === 0) {
-	        result = this.bbox().pointNearestToPoint(p);
+            if (dx === 0) {
+                result = this.bbox().pointNearestToPoint(p);
                 if (angle) return result.rotate(point(this.x, this.y), -angle);
                 return result;
-	    }
-	    var m = dy / dx;
-	    var mSquared = m * m;
-	    var aSquared = this.a * this.a;
-	    var bSquared = this.b * this.b;
-	    var x = sqrt(1 / ((1 / aSquared) + (mSquared / bSquared)));
+            }
+            var m = dy / dx;
+            var mSquared = m * m;
+            var aSquared = this.a * this.a;
+            var bSquared = this.b * this.b;
+            var x = sqrt(1 / ((1 / aSquared) + (mSquared / bSquared)));
 
             x = dx < 0 ? -x : x;
-	    var y = m * x;
-	    result = point(this.x + x, this.y + y);
+            var y = m * x;
+            result = point(this.x + x, this.y + y);
             if (angle) return result.rotate(point(this.x, this.y), -angle);
             return result;
         }
@@ -594,11 +605,11 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
             var path = ['M', points[0].x, points[0].y];
 
             for (var i = 0; i < controlPoints[0].length; i++) {
-                path.push('C', controlPoints[0][i].x, controlPoints[0][i].y, controlPoints[1][i].x, controlPoints[1][i].y, points[i+1].x, points[i+1].y);        
+                path.push('C', controlPoints[0][i].x, controlPoints[0][i].y, controlPoints[1][i].x, controlPoints[1][i].y, points[i + 1].x, points[i + 1].y);
             }
             return path;
         },
-        
+
         // Get open-ended Bezier Spline Control Points.
         // @param knots Input Knot Bezier spline points (At least two points!).
         // @param firstControlPoints Output First Control points. Array of knots.length - 1 length.
@@ -610,20 +621,20 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
             var i;
 
             // Special case: Bezier curve should be a straight line.
-            if (n == 1) { 
-	        // 3P1 = 2P0 + P3
-	        firstControlPoints[0] = point((2 * knots[0].x + knots[1].x) / 3,
-	                                      (2 * knots[0].y + knots[1].y) / 3);
-	        // P2 = 2P1 – P0
-	        secondControlPoints[0] = point(2 * firstControlPoints[0].x - knots[0].x,
-	                                       2 * firstControlPoints[0].y - knots[0].y);
-	        return [firstControlPoints, secondControlPoints];
+            if (n == 1) {
+                // 3P1 = 2P0 + P3
+                firstControlPoints[0] = point((2 * knots[0].x + knots[1].x) / 3,
+                                              (2 * knots[0].y + knots[1].y) / 3);
+                // P2 = 2P1 – P0
+                secondControlPoints[0] = point(2 * firstControlPoints[0].x - knots[0].x,
+                                               2 * firstControlPoints[0].y - knots[0].y);
+                return [firstControlPoints, secondControlPoints];
             }
-            
-                // Calculate first Bezier control points.
+
+            // Calculate first Bezier control points.
             // Right hand side vector.
             var rhs = [];
-            
+
             // Set right hand side X values.
             for (i = 1; i < n - 1; i++) {
                 rhs[i] = 4 * knots[i].x + 2 * knots[i + 1].x;
@@ -632,28 +643,28 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
             rhs[n - 1] = (8 * knots[n - 1].x + knots[n].x) / 2.0;
             // Get first control points X-values.
             var x = this.getFirstControlPoints(rhs);
-            
+
             // Set right hand side Y values.
             for (i = 1; i < n - 1; ++i) {
-	        rhs[i] = 4 * knots[i].y + 2 * knots[i + 1].y;
+                rhs[i] = 4 * knots[i].y + 2 * knots[i + 1].y;
             }
             rhs[0] = knots[0].y + 2 * knots[1].y;
             rhs[n - 1] = (8 * knots[n - 1].y + knots[n].y) / 2.0;
             // Get first control points Y-values.
             var y = this.getFirstControlPoints(rhs);
-            
+
             // Fill output arrays.
             for (i = 0; i < n; i++) {
-	        // First control point.
-	        firstControlPoints.push(point(x[i], y[i]));
-	        // Second control point.
-	        if (i < n - 1) {
-	            secondControlPoints.push(point(2 * knots [i + 1].x - x[i + 1],
+                // First control point.
+                firstControlPoints.push(point(x[i], y[i]));
+                // Second control point.
+                if (i < n - 1) {
+                    secondControlPoints.push(point(2 * knots [i + 1].x - x[i + 1],
                                                    2 * knots[i + 1].y - y[i + 1]));
-	        } else {
-	            secondControlPoints.push(point((knots[n].x + x[n - 1]) / 2,
-					           (knots[n].y + y[n - 1]) / 2));
-	        }
+                } else {
+                    secondControlPoints.push(point((knots[n].x + x[n - 1]) / 2,
+                                                   (knots[n].y + y[n - 1]) / 2));
+                }
             }
             return [firstControlPoints, secondControlPoints];
         },
@@ -667,17 +678,17 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
             var x = [];
             var tmp = [];
             var b = 2.0;
-            
+
             x[0] = rhs[0] / b;
             // Decomposition and forward substitution.
-            for (var i = 1; i < n; i++) { 
-	        tmp[i] = 1 / b;
-	        b = (i < n - 1 ? 4.0 : 3.5) - tmp[i];
-	        x[i] = (rhs[i] - x[i - 1]) / b;
+            for (var i = 1; i < n; i++) {
+                tmp[i] = 1 / b;
+                b = (i < n - 1 ? 4.0 : 3.5) - tmp[i];
+                x[i] = (rhs[i] - x[i - 1]) / b;
             }
             for (i = 1; i < n; i++) {
                 // Backsubstitution.
-	        x[n - i - 1] -= tmp[n - i] * x[n - i]; 
+                x[n - i - 1] -= tmp[n - i] * x[n - i];
             }
             return x;
         },
@@ -689,12 +700,13 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
         // @return a function accepts a point and returns t.
         getInversionSolver: function(p0, p1, p2, p3) {
             var pts = arguments;
-            function l(i,j) {
+            function l(i, j) {
                 // calculates a determinant 3x3
                 // [p.x  p.y  1]
                 // [pi.x pi.y 1]
                 // [pj.x pj.y 1]
-                var pi = pts[i], pj = pts[j];
+                var pi = pts[i];
+                var pj = pts[j];
                 return function(p) {
                     var w = (i % 3 ? 3 : 1) * (j % 3 ? 3 : 1);
                     var lij = p.x * (pi.y - pj.y) + p.y * (pj.x - pi.x) + pi.x * pj.y - pi.y * pj.x;
@@ -702,11 +714,11 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
                 };
             }
             return function solveInversion(p) {
-                var ct = 3 * l(2,3)(p1);
-                var c1 = l(1,3)(p0) / ct;
-                var c2 = -l(2,3)(p0) / ct;
-                var la = c1 * l(3,1)(p) + c2 * (l(3,0)(p) + l(2,1)(p)) + l(2,0)(p);
-                var lb = c1 * l(3,0)(p) + c2 * l(2,0)(p) + l(1,0)(p);
+                var ct = 3 * l(2, 3)(p1);
+                var c1 = l(1, 3)(p0) / ct;
+                var c2 = -l(2, 3)(p0) / ct;
+                var la = c1 * l(3, 1)(p) + c2 * (l(3, 0)(p) + l(2, 1)(p)) + l(2, 0)(p);
+                var lb = c1 * l(3, 0)(p) + c2 * l(2, 0)(p) + l(1, 0)(p);
                 return lb / (lb - la);
             };
         },
@@ -715,16 +727,16 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
         // Using deCasteljau algorithm. http://math.stackexchange.com/a/317867
         // @param control points (start, control start, control end, end)
         // @return a function accepts t and returns 2 curves each defined by 4 control points.
-        getCurveDivider: function(p0,p1,p2,p3) {
+        getCurveDivider: function(p0, p1, p2, p3) {
             return function divideCurve(t) {
-                var l = line(p0,p1).pointAt(t);
-                var m = line(p1,p2).pointAt(t);
-                var n = line(p2,p3).pointAt(t);
-                var p = line(l,m).pointAt(t);
-                var q = line(m,n).pointAt(t);
-                var r = line(p,q).pointAt(t);
+                var l = line(p0, p1).pointAt(t);
+                var m = line(p1, p2).pointAt(t);
+                var n = line(p2, p3).pointAt(t);
+                var p = line(l, m).pointAt(t);
+                var q = line(m, n).pointAt(t);
+                var r = line(p, q).pointAt(t);
                 return [{ p0: p0, p1: l, p2: p, p3: r }, { p0: r, p1: q, p2: n, p3: p3 }];
-            }
+            };
         }
     };
 
@@ -745,29 +757,30 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
         toDeg: toDeg,
         toRad: toRad,
         snapToGrid: snapToGrid,
-	normalizeAngle: normalizeAngle,
+        normalizeAngle: normalizeAngle,
         point: point,
         line: line,
         rect: rect,
         ellipse: ellipse,
         bezier: bezier,
         scale: scale
-    }
+    };
 }));
 
 // Vectorizer.
 // -----------
 
 // A tiny library for making your live easier when dealing with SVG.
+// The only Vectorizer dependency is the Geometry library.
 
-// Copyright © 2012 - 2014 client IO (http://client.io)
+// Copyright © 2012 - 2015 client IO (http://client.io)
 
 (function(root, factory) {
 
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
         define(["Geometry"], factory);
-        
+
     } else if (typeof exports === 'object') {
         // Node. Does not work with strict CommonJS, but
         // only CommonJS-like environments that support module.exports,
@@ -808,7 +821,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
         var svg = '<svg xmlns="' + ns.xmlns + '" xmlns:xlink="' + ns.xlink + '" version="' + SVGversion + '">' + (content || '') + '</svg>';
         var parser = new DOMParser();
         parser.async = false;
-	return parser.parseFromString(svg, 'text/xml').documentElement;
+        return parser.parseFromString(svg, 'text/xml').documentElement;
     }
 
     // Create SVG element.
@@ -816,8 +829,10 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
     function createElement(el, attrs, children) {
 
+        var i, len;
+
         if (!el) return undefined;
-        
+
         // If `el` is an object, it is probably a native SVG element. Wrap it to VElement.
         if (typeof el === 'object') {
             return new VElement(el);
@@ -826,13 +841,13 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
         // If `el` is a `'svg'` or `'SVG'` string, create a new SVG canvas.
         if (el.toLowerCase() === 'svg') {
-            
-	    return new VElement(createSvgDocument());
-            
+
+            return new VElement(createSvgDocument());
+
         } else if (el[0] === '<') {
             // Create element from an SVG string.
             // Allows constructs of type: `document.appendChild(Vectorizer('<rect></rect>').node)`.
-            
+
             var svgDoc = createSvgDocument(el);
 
             // Note that `createElement()` might also return an array should the SVG string passed as
@@ -841,17 +856,17 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
                 // Map child nodes to `VElement`s.
                 var ret = [];
-                for (var i = 0, len = svgDoc.childNodes.length; i < len; i++) {
+                for (i = 0, len = svgDoc.childNodes.length; i < len; i++) {
 
                     var childNode = svgDoc.childNodes[i];
                     ret.push(new VElement(document.importNode(childNode, true)));
                 }
                 return ret;
             }
-            
+
             return new VElement(document.importNode(svgDoc.firstChild, true));
         }
-        
+
         el = document.createElementNS(ns.xmlns, el);
 
         // Set attributes.
@@ -859,22 +874,21 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
             setAttribute(el, key, attrs[key]);
         }
-        
+
         // Normalize `children` array.
         if (Object.prototype.toString.call(children) != '[object Array]') children = [children];
 
         // Append children if they are specified.
-        var i = 0, len = (children[0] && children.length) || 0, child;
-        for (; i < len; i++) {
-            child = children[i];
+        for (i = 0, len = (children[0] && children.length) || 0; i < len; i++) {
+            var child = children[i];
             el.appendChild(child instanceof VElement ? child.node : child);
         }
-        
+
         return new VElement(el);
     }
 
     function setAttribute(el, name, value) {
-        
+
         if (name.indexOf(':') > -1) {
             // Attribute names can be namespaced. E.g. `image` elements
             // have a `xlink:href` attribute to set the source of the image.
@@ -912,7 +926,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
         }
 
         var sx = (scale && scale[0]) ? parseFloat(scale[0]) : 1;
-        
+
         return {
             translate: {
                 tx: (translate && translate[0]) ? parseInt(translate[0], 10) : 0,
@@ -934,37 +948,37 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
     // Matrix decomposition.
     // ---------------------
 
-    function deltaTransformPoint(matrix, point)  {
-        
-	var dx = point.x * matrix.a + point.y * matrix.c + 0;
-	var dy = point.x * matrix.b + point.y * matrix.d + 0;
-	return { x: dx, y: dy };
+    function deltaTransformPoint(matrix, point) {
+
+        var dx = point.x * matrix.a + point.y * matrix.c + 0;
+        var dy = point.x * matrix.b + point.y * matrix.d + 0;
+        return { x: dx, y: dy };
     }
 
     function decomposeMatrix(matrix) {
 
         // @see https://gist.github.com/2052247
-        
+
         // calculate delta transform point
-	var px = deltaTransformPoint(matrix, { x: 0, y: 1 });
-	var py = deltaTransformPoint(matrix, { x: 1, y: 0 });
-        
-	// calculate skew
-	var skewX = ((180 / Math.PI) * Math.atan2(px.y, px.x) - 90);
-	var skewY = ((180 / Math.PI) * Math.atan2(py.y, py.x));
-        
-	return {
-            
-	    translateX: matrix.e,
-	    translateY: matrix.f,
-	    scaleX: Math.sqrt(matrix.a * matrix.a + matrix.b * matrix.b),
-	    scaleY: Math.sqrt(matrix.c * matrix.c + matrix.d * matrix.d),
-	    skewX: skewX,
-	    skewY: skewY,
-	    rotation: skewX // rotation is the same as skew x
-	};
+        var px = deltaTransformPoint(matrix, { x: 0, y: 1 });
+        var py = deltaTransformPoint(matrix, { x: 1, y: 0 });
+
+        // calculate skew
+        var skewX = ((180 / Math.PI) * Math.atan2(px.y, px.x) - 90);
+        var skewY = ((180 / Math.PI) * Math.atan2(py.y, py.x));
+
+        return {
+
+            translateX: matrix.e,
+            translateY: matrix.f,
+            scaleX: Math.sqrt(matrix.a * matrix.a + matrix.b * matrix.b),
+            scaleY: Math.sqrt(matrix.c * matrix.c + matrix.d * matrix.d),
+            skewX: skewX,
+            skewY: skewY,
+            rotation: skewX // rotation is the same as skew x
+        };
     }
-    
+
     // VElement.
     // ---------
 
@@ -979,25 +993,25 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
     // --------------------
 
     VElement.prototype = {
-        
+
         translate: function(tx, ty, opt) {
 
             opt = opt || {};
             ty = ty || 0;
-            
-            var transformAttr = this.attr('transform') || '',
-                transform = parseTransformString(transformAttr);
+
+            var transformAttr = this.attr('transform') || '';
+            var transform = parseTransformString(transformAttr);
 
             // Is it a getter?
             if (typeof tx === 'undefined') {
                 return transform.translate;
             }
-            
+
             transformAttr = transformAttr.replace(/translate\([^\)]*\)/g, '').trim();
 
-            var newTx = opt.absolute ? tx : transform.translate.tx + tx,
-                newTy = opt.absolute ? ty : transform.translate.ty + ty,
-                newTranslate = 'translate(' + newTx + ',' + newTy + ')';
+            var newTx = opt.absolute ? tx : transform.translate.tx + tx;
+            var newTy = opt.absolute ? ty : transform.translate.ty + ty;
+            var newTranslate = 'translate(' + newTx + ',' + newTy + ')';
 
             // Note that `translate()` is always the first transformation. This is
             // usually the desired case.
@@ -1009,21 +1023,21 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
             opt = opt || {};
 
-            var transformAttr = this.attr('transform') || '',
-                transform = parseTransformString(transformAttr);
+            var transformAttr = this.attr('transform') || '';
+            var transform = parseTransformString(transformAttr);
 
             // Is it a getter?
             if (typeof angle === 'undefined') {
                 return transform.rotate;
             }
-            
+
             transformAttr = transformAttr.replace(/rotate\([^\)]*\)/g, '').trim();
 
             angle %= 360;
 
-            var newAngle = opt.absolute ? angle: transform.rotate.angle + angle,
-                newOrigin = (cx !== undefined && cy !== undefined) ? ',' + cx + ',' + cy : '',
-                newRotate = 'rotate(' + newAngle + newOrigin + ')';
+            var newAngle = opt.absolute ? angle : transform.rotate.angle + angle;
+            var newOrigin = (cx !== undefined && cy !== undefined) ? ',' + cx + ',' + cy : '';
+            var newRotate = 'rotate(' + newAngle + newOrigin + ')';
 
             this.attr('transform', (transformAttr + ' ' + newRotate).trim());
             return this;
@@ -1032,15 +1046,15 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
         // Note that `scale` as the only transformation does not combine with previous values.
         scale: function(sx, sy) {
             sy = (typeof sy === 'undefined') ? sx : sy;
-            
-            var transformAttr = this.attr('transform') || '',
-                transform = parseTransformString(transformAttr);
+
+            var transformAttr = this.attr('transform') || '';
+            var transform = parseTransformString(transformAttr);
 
             // Is it a getter?
             if (typeof sx === 'undefined') {
                 return transform.scale;
             }
-            
+
             transformAttr = transformAttr.replace(/scale\([^\)]*\)/g, '').trim();
 
             var newScale = 'scale(' + sx + ',' + sy + ')';
@@ -1057,17 +1071,17 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
             // If the element is not in the live DOM, it does not have a bounding box defined and
             // so fall back to 'zero' dimension element.
             if (!this.node.ownerSVGElement) return { x: 0, y: 0, width: 0, height: 0 };
-            
+
             var box;
             try {
 
                 box = this.node.getBBox();
 
-		// Opera returns infinite values in some cases.
-		// Note that Infinity | 0 produces 0 as opposed to Infinity || 0.
-		// We also have to create new object as the standard says that you can't
-		// modify the attributes of a bbox.
-		box = { x: box.x | 0, y: box.y | 0, width: box.width | 0, height: box.height | 0};
+                // Opera returns infinite values in some cases.
+                // Note that Infinity | 0 produces 0 as opposed to Infinity || 0.
+                // We also have to create new object as the standard says that you can't
+                // modify the attributes of a bbox.
+                box = { x: box.x | 0, y: box.y | 0, width: box.width | 0, height: box.height | 0 };
 
             } catch (e) {
 
@@ -1092,26 +1106,26 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
         text: function(content, opt) {
 
-	    opt = opt || {};
+            opt = opt || {};
             var lines = content.split('\n');
-	    var i = 0;
+            var i = 0;
             var tspan;
 
             // `alignment-baseline` does not work in Firefox.
-	    // Setting `dominant-baseline` on the `<text>` element doesn't work in IE9.
+            // Setting `dominant-baseline` on the `<text>` element doesn't work in IE9.
             // In order to have the 0,0 coordinate of the `<text>` element (or the first `<tspan>`)
-	    // in the top left corner we translate the `<text>` element by `0.8em`.
-	    // See `http://www.w3.org/Graphics/SVG/WG/wiki/How_to_determine_dominant_baseline`.
-	    // See also `http://apike.ca/prog_svg_text_style.html`.
-	    this.attr('y', '0.8em');
+            // in the top left corner we translate the `<text>` element by `0.8em`.
+            // See `http://www.w3.org/Graphics/SVG/WG/wiki/How_to_determine_dominant_baseline`.
+            // See also `http://apike.ca/prog_svg_text_style.html`.
+            this.attr('y', '0.8em');
 
             // An empty text gets rendered into the DOM in webkit-based browsers.
             // In order to unify this behaviour across all browsers
             // we rather hide the text element when it's empty.
             this.attr('display', content ? null : 'none');
 
-	    // Preserve spaces. In other words, we do not want consecutive spaces to get collapsed to one.
-	    this.node.setAttributeNS("http://www.w3.org/XML/1998/namespace", "xml:space","preserve");
+            // Preserve spaces. In other words, we do not want consecutive spaces to get collapsed to one.
+            this.node.setAttributeNS('http://www.w3.org/XML/1998/namespace', 'xml:space', 'preserve');
 
             // Easy way to erase all `<tspan>` children;
             this.node.textContent = '';
@@ -1127,7 +1141,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
                     defs = createElement('defs');
                     this.append(defs);
                 }
-                
+
                 // If `opt.textPath` is a plain string, consider it to be directly the
                 // SVG path data for the text to go along (this is a shortcut).
                 // Otherwise if it is an object and contains the `d` property, then this is our path.
@@ -1165,26 +1179,36 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
                 // Shift all the <tspan> but first by one line (`1em`)
                 tspan = V('tspan', { dy: (i == 0 ? '0em' : opt.lineHeight || '1em'), x: this.attr('x') || 0 });
-                tspan.addClass('line');
+                tspan.addClass('v-line');
                 if (!lines[i]) {
-                    tspan.addClass('empty-line');
+                    tspan.addClass('v-empty-line');
                 }
-		// Make sure the textContent is never empty. If it is, add an additional 
-		// space (an invisible character) so that following lines are correctly
-		// relatively positioned. `dy=1em` won't work with empty lines otherwise.
+                // Make sure the textContent is never empty. If it is, add an additional
+                // space (an invisible character) so that following lines are correctly
+                // relatively positioned. `dy=1em` won't work with empty lines otherwise.
                 tspan.node.textContent = lines[i] || ' ';
-                
+
                 V(textNode).append(tspan);
             }
             return this;
         },
-        
+
         attr: function(name, value) {
-            
+
+            if (typeof name === 'undefined') {
+                // Return all attributes.
+                var attributes = this.node.attributes;
+                var attrs = {};
+                for (var i = 0; i < attributes.length; i++) {
+                    attrs[attributes[i].nodeName] = attributes[i].nodeValue;
+                }
+                return attrs;
+            }
+
             if (typeof name === 'string' && typeof value === 'undefined') {
                 return this.node.getAttribute(name);
             }
-            
+
             if (typeof name === 'object') {
 
                 for (var attrName in name) {
@@ -1192,7 +1216,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
                         setAttribute(this.node, attrName, name[attrName]);
                     }
                 }
-                
+
             } else {
 
                 setAttribute(this.node, name, value);
@@ -1210,9 +1234,9 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
         append: function(el) {
 
             var els = el;
-            
+
             if (Object.prototype.toString.call(el) !== '[object Array]') {
-                
+
                 els = [el];
             }
 
@@ -1220,7 +1244,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
                 el = els[i];
                 this.node.appendChild(el instanceof VElement ? el.node : el);
             }
-            
+
             return this;
         },
 
@@ -1236,7 +1260,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
         defs: function() {
 
             var defs = this.svg().node.getElementsByTagName('defs');
-            
+
             return (defs && defs.length) ? V(defs[0]) : undefined;
         },
 
@@ -1263,26 +1287,26 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
             }
             return nodes;
         },
-        
+
         // Convert global point into the coordinate space of this element.
         toLocalPoint: function(x, y) {
 
             var svg = this.svg().node;
-            
+
             var p = svg.createSVGPoint();
             p.x = x;
             p.y = y;
 
-	    try {
+            try {
 
-		var globalPoint = p.matrixTransform(svg.getScreenCTM().inverse());
-		var globalToLocalMatrix = this.node.getTransformToElement(svg).inverse();
+                var globalPoint = p.matrixTransform(svg.getScreenCTM().inverse());
+                var globalToLocalMatrix = this.node.getTransformToElement(svg).inverse();
 
-	    } catch(e) {
-		// IE9 throws an exception in odd cases. (`Unexpected call to method or property access`)
-		// We have to make do with the original coordianates.
-		return p;
-	    }
+            } catch (e) {
+                // IE9 throws an exception in odd cases. (`Unexpected call to method or property access`)
+                // We have to make do with the original coordianates.
+                return p;
+            }
 
             return globalPoint.matrixTransform(globalToLocalMatrix);
         },
@@ -1316,7 +1340,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
             // 1. Translate to origin.
             var translateToOrigin = svg.createSVGTransform();
-            translateToOrigin.setTranslate(-bbox.x - bbox.width/2, -bbox.y - bbox.height/2);
+            translateToOrigin.setTranslate(-bbox.x - bbox.width / 2, -bbox.y - bbox.height / 2);
 
             // 2. Rotate around origin.
             var rotateAroundOrigin = svg.createSVGTransform();
@@ -1325,7 +1349,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
             // 3. Translate to the `position` + the offset (half my width) towards the `reference` point.
             var translateFinal = svg.createSVGTransform();
-            var finalPosition = g.point(position).move(reference, bbox.width/2);
+            var finalPosition = g.point(position).move(reference, bbox.width / 2);
             translateFinal.setTranslate(position.x + (position.x - finalPosition.x), position.y + (position.y - finalPosition.y));
 
             // 4. Apply transformations.
@@ -1365,25 +1389,25 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
                 animateMotion.node.beginElement();
             } catch (e) {
                 // Fallback for IE 9.
-		// Run the animation programatically if FakeSmile (`http://leunen.me/fakesmile/`) present 
-		if (document.documentElement.getAttribute('smiling') === 'fake') {
+                // Run the animation programatically if FakeSmile (`http://leunen.me/fakesmile/`) present
+                if (document.documentElement.getAttribute('smiling') === 'fake') {
 
-		    // Register the animation. (See `https://answers.launchpad.net/smil/+question/203333`)
-		    var animation = animateMotion.node;
-		    animation.animators = [];
+                    // Register the animation. (See `https://answers.launchpad.net/smil/+question/203333`)
+                    var animation = animateMotion.node;
+                    animation.animators = [];
 
-		    var animationID = animation.getAttribute('id');
-		    if (animationID) id2anim[animationID] = animation;
+                    var animationID = animation.getAttribute('id');
+                    if (animationID) id2anim[animationID] = animation;
 
                     var targets = getTargets(animation);
                     for (var i = 0, len = targets.length; i < len; i++) {
                         var target = targets[i];
-			var animator = new Animator(animation, target, i);
-			animators.push(animator);
-			animation.animators[i] = animator;
+                        var animator = new Animator(animation, target, i);
+                        animators.push(animator);
+                        animation.animators[i] = animator;
                         animator.register();
                     }
-		}
+                }
             }
         },
 
@@ -1423,8 +1447,265 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
             }
 
             return this;
+        },
+
+        // Interpolate path by discrete points. The precision of the sampling
+        // is controlled by `interval`. In other words, `sample()` will generate
+        // a point on the path starting at the beginning of the path going to the end
+        // every `interval` pixels.
+        // The sampler can be very useful for e.g. finding intersection between two
+        // paths (finding the two closest points from two samples).
+        sample: function(interval) {
+
+            interval = interval || 1;
+            var node = this.node;
+            var length = node.getTotalLength();
+            var samples = [];
+            var distance = 0;
+            var sample;
+            while (distance < length) {
+                sample = node.getPointAtLength(distance);
+                samples.push({ x: sample.x, y: sample.y, distance: distance });
+                distance += interval;
+            }
+            return samples;
+        },
+
+        convertToPath: function() {
+
+            var path = createElement('path');
+            path.attr(this.attr());
+            var d = this.convertToPathData();
+            if (d) {
+                path.attr('d', d);
+            }
+            return path;
+        },
+
+        convertToPathData: function() {
+
+            var tagName = this.node.tagName.toUpperCase();
+
+            switch (tagName) {
+            case 'PATH':
+                return this.attr('d');
+            case 'LINE':
+                return convertLineToPathData(this.node);
+            case 'POLYGON':
+                return convertPolygonToPathData(this.node);
+            case 'POLYLINE':
+                return convertPolylineToPathData(this.node);
+            case 'ELLIPSE':
+                return convertEllipseToPathData(this.node);
+            case 'CIRCLE':
+                return convertCircleToPathData(this.node);
+            case 'RECT':
+                return convertRectToPathData(this.node);
+            }
+
+            throw new Error(tagName + ' cannot be converted to PATH.');
+        },
+
+        // Find the intersection of a line starting in the center
+        // of the SVG `node` ending in the point `ref`.
+        // `target` is an SVG element to which `node`s transformations are relative to.
+        // In JointJS, `target` is the `paper.viewport` SVG group element.
+        // Note that `ref` point must be in the coordinate system of the `target` for this function to work properly.
+        // Returns a point in the `target` coordinte system (the same system as `ref` is in) if
+        // an intersection is found. Returns `undefined` otherwise.
+        findIntersection: function(ref, target) {
+
+            var svg = this.svg().node;
+            target = target || svg;
+            var bbox = g.rect(this.bbox(false, target));
+            var center = bbox.center();
+            var spot = bbox.intersectionWithLineFromCenterToPoint(ref);
+
+            if (!spot) return undefined;
+
+            var tagName = this.node.localName.toUpperCase();
+
+            // Little speed up optimalization for `<rect>` element. We do not do conversion
+            // to path element and sampling but directly calculate the intersection through
+            // a transformed geometrical rectangle.
+            if (tagName === 'RECT') {
+
+                var gRect = g.rect(
+                    parseFloat(this.attr('x') || 0),
+                    parseFloat(this.attr('y') || 0),
+                    parseFloat(this.attr('width')),
+                    parseFloat(this.attr('height'))
+                );
+                // Get the rect transformation matrix with regards to the SVG document.
+                var rectMatrix = this.node.getTransformToElement(target);
+                // Decompose the matrix to find the rotation angle.
+                var rectMatrixComponents = V.decomposeMatrix(rectMatrix);
+                // Now we want to rotate the rectangle back so that we
+                // can use `intersectionWithLineFromCenterToPoint()` passing the angle as the second argument.
+                var resetRotation = svg.createSVGTransform();
+                resetRotation.setRotate(-rectMatrixComponents.rotation, center.x, center.y);
+                var rect = V.transformRect(gRect, resetRotation.matrix.multiply(rectMatrix));
+                spot = g.rect(rect).intersectionWithLineFromCenterToPoint(ref, rectMatrixComponents.rotation);
+
+            } else if (tagName === 'PATH' || tagName === 'POLYGON' || tagName === 'POLYLINE' || tagName === 'CIRCLE' || tagName === 'ELLIPSE') {
+
+                var pathNode = (tagName === 'PATH') ? this : this.convertToPath();
+                var samples = pathNode.sample();
+                var minDistance = Infinity;
+                var closestSamples = [];
+
+                for (var i = 0, len = samples.length; i < len; i++) {
+
+                    var sample = samples[i];
+                    // Convert the sample point in the local coordinate system to the global coordinate system.
+                    var gp = V.createSVGPoint(sample.x, sample.y);
+                    gp = gp.matrixTransform(this.node.getTransformToElement(target));
+                    sample = g.point(gp);
+                    var centerDistance = sample.distance(center);
+                    // Penalize a higher distance to the reference point by 10%.
+                    // This gives better results. This is due to
+                    // inaccuracies introduced by rounding errors and getPointAtLength() returns.
+                    var refDistance = sample.distance(ref) * 1.1;
+                    var distance = centerDistance + refDistance;
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        closestSamples = [{ sample: sample, refDistance: refDistance }];
+                    } else if (distance < minDistance + 1) {
+                        closestSamples.push({ sample: sample, refDistance: refDistance });
+                    }
+                }
+                closestSamples.sort(function(a, b) { return a.refDistance - b.refDistance; });
+                spot = closestSamples[0].sample;
+            }
+
+            return spot;
         }
     };
+
+    function convertLineToPathData(line) {
+
+        line = createElement(line);
+        var d = [
+            'M', line.attr('x1'), line.attr('y1'),
+            'L', line.attr('x2'), line.attr('y2')
+        ].join(' ');
+        return d;
+    }
+
+    function convertPolygonToPathData(polygon) {
+
+        polygon = createElement(polygon);
+        var points = polygon.node.points;
+
+        var d = [];
+        var p;
+        for (var i = 0; i < points.length; i++) {
+            p = points[i];
+            d.push(i === 0 ? 'M' : 'L', p.x, p.y);
+        }
+        d.push('Z');
+        return d.join(' ');
+    }
+
+    function convertPolylineToPathData(polyline) {
+
+        polyline = createElement(polyline);
+        var points = polyline.node.points;
+
+        var d = [];
+        var p;
+        for (var i = 0; i < points.length; i++) {
+            p = points[i];
+            d.push(i === 0 ? 'M' : 'L', p.x, p.y);
+        }
+        return d.join(' ');
+    }
+
+    var KAPPA = 0.5522847498307935;
+
+    function convertCircleToPathData(circle) {
+
+        circle = createElement(circle);
+        var cx = parseFloat(circle.attr('cx')) || 0;
+        var cy = parseFloat(circle.attr('cy')) || 0;
+        var r = parseFloat(circle.attr('r'));
+        var cd = r * KAPPA; // Control distance.
+
+        var d = [
+            'M', cx, cy - r,    // Move to the first point.
+            'C', cx + cd, cy - r, cx + r, cy - cd, cx + r, cy, // I. Quadrant.
+            'C', cx + r, cy + cd, cx + cd, cy + r, cx, cy + r, // II. Quadrant.
+            'C', cx - cd, cy + r, cx - r, cy + cd, cx - r, cy, // III. Quadrant.
+            'C', cx - r, cy - cd, cx - cd, cy - r, cx, cy - r, // IV. Quadrant.
+            'Z'
+        ].join(' ');
+        return d;
+    }
+
+    function convertEllipseToPathData(ellipse) {
+
+        ellipse = createElement(ellipse);
+        var cx = parseFloat(ellipse.attr('cx')) || 0;
+        var cy = parseFloat(ellipse.attr('cy')) || 0;
+        var rx = parseFloat(ellipse.attr('rx'));
+        var ry = parseFloat(ellipse.attr('ry')) || rx;
+        var cdx = rx * KAPPA; // Control distance x.
+        var cdy = ry * KAPPA; // Control distance y.
+
+        var d = [
+            'M', cx, cy - ry,    // Move to the first point.
+            'C', cx + cdx, cy - ry, cx + rx, cy - cdy, cx + rx, cy, // I. Quadrant.
+            'C', cx + rx, cy + cdy, cx + cdx, cy + ry, cx, cy + ry, // II. Quadrant.
+            'C', cx - cdx, cy + ry, cx - rx, cy + cdy, cx - rx, cy, // III. Quadrant.
+            'C', cx - rx, cy - cdy, cx - cdx, cy - ry, cx, cy - ry, // IV. Quadrant.
+            'Z'
+        ].join(' ');
+        return d;
+    }
+
+    function convertRectToPathData(rect) {
+
+        rect = createElement(rect);
+        var x = parseFloat(rect.attr('x')) || 0;
+        var y = parseFloat(rect.attr('y')) || 0;
+        var width = parseFloat(rect.attr('width')) || 0;
+        var height = parseFloat(rect.attr('height')) || 0;
+        var rx = parseFloat(rect.attr('rx')) || 0;
+        var ry = parseFloat(rect.attr('ry')) || 0;
+        var bbox = g.rect(x, y, width, height);
+
+        var d;
+
+        if (!rx && !ry) {
+
+            d = [
+                'M', bbox.origin().x, bbox.origin().y,
+                'H', bbox.corner().x,
+                'V', bbox.corner().y,
+                'H', bbox.origin().x,
+                'V', bbox.origin().y,
+                'Z'
+            ].join(' ');
+
+        } else {
+
+            var r = x + width;
+            var b = y + height;
+            d = [
+                'M', x + rx, y,
+                'L', r - rx, y,
+                'Q', r, y, r, y + ry,
+                'L', r, y + height - ry,
+                'Q', r, b, r - rx, b,
+                'L', x + rx, b,
+                'Q', x, b, x, b - rx,
+                'L', x, y + ry,
+                'Q', x, y, x + rx, y,
+                'Z'
+            ].join(' ');
+        }
+        return d;
+    }
 
     // Convert a rectangle to SVG path commands. `r` is an object of the form:
     // `{ x: [number], y: [number], width: [number], height: [number], top-ry: [number], top-ry: [number], bottom-rx: [number], bottom-ry: [number] }`,
@@ -1457,14 +1738,14 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
     V.rectToPath = rectToPath;
 
     var svgDocument = V('svg').node;
-    
+
     V.createSVGMatrix = function(m) {
 
         var svgMatrix = svgDocument.createSVGMatrix();
         for (var component in m) {
             svgMatrix[component] = m[component];
         }
-        
+
         return svgMatrix;
     };
 
@@ -1501,10 +1782,10 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
         p.y = r.y + r.height;
         var corner4 = p.matrixTransform(matrix);
 
-        var minX = Math.min(corner1.x,corner2.x,corner3.x,corner4.x);
-        var maxX = Math.max(corner1.x,corner2.x,corner3.x,corner4.x);
-        var minY = Math.min(corner1.y,corner2.y,corner3.y,corner4.y);
-        var maxY = Math.max(corner1.y,corner2.y,corner3.y,corner4.y);
+        var minX = Math.min(corner1.x, corner2.x, corner3.x, corner4.x);
+        var maxX = Math.max(corner1.x, corner2.x, corner3.x, corner4.x);
+        var minY = Math.min(corner1.y, corner2.y, corner3.y, corner4.y);
+        var maxY = Math.max(corner1.y, corner2.y, corner3.y, corner4.y);
 
         return { x: minX, y: minY, width: maxX - minX, height: maxY - minY };
     };
@@ -1512,7 +1793,6 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
     return V;
 
 }));
-
 
 //      JointJS library.
 //      (c) 2011-2013 client IO
